@@ -39,6 +39,12 @@ def main():
     standalone = (
         "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"
+        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"icon.svg\">\n"
+        "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"favicon-32.png\">\n"
+        "<link rel=\"apple-touch-icon\" href=\"apple-touch-icon.png\">\n"
+        "<link rel=\"manifest\" href=\"manifest.json\">\n"
+        "<meta name=\"theme-color\" content=\"#ffcb3d\">\n"
+        "<meta name=\"apple-mobile-web-app-title\" content=\"Giggle Blanks\">\n"
         "</head>\n<body>\n" + page + "\n</body>\n</html>\n"
     )
     index = os.path.join(HERE, "index.html")

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background: sunny yellow tile -->
+  <rect width="512" height="512" fill="#ffcb3d"/>
+  <circle cx="430" cy="86" r="120" fill="#ffd96b"/>
+  <circle cx="70" cy="450" r="90" fill="#ffbf1f"/>
+
+  <!-- Notebook page, slightly tilted, with a soft shadow -->
+  <g transform="rotate(-7 256 266)">
+    <rect x="104" y="104" width="312" height="336" rx="34" fill="#1f2c55" opacity="0.18" transform="translate(10 14)"/>
+    <rect x="104" y="104" width="312" height="336" rx="34" fill="#ffffff"/>
+    <rect x="148" y="104" width="6" height="336" fill="#f2a7a0"/>
+    <!-- Fill-in blank across the top line -->
+    <rect x="182" y="168" width="196" height="16" rx="8" fill="#2b59c3"/>
+    <!-- Giggling face -->
+    <path d="M196 248 q22 -26 44 0" fill="none" stroke="#1f2c55" stroke-width="16" stroke-linecap="round"/>
+    <path d="M286 248 q22 -26 44 0" fill="none" stroke="#1f2c55" stroke-width="16" stroke-linecap="round"/>
+    <path d="M186 292 h158 q0 92 -79 92 q-79 0 -79 -92 z" fill="#1f2c55"/>
+    <path d="M222 352 q43 -26 86 0 q-10 32 -43 32 q-33 0 -43 -32 z" fill="#ff7a8a"/>
+    <circle cx="178" cy="286" r="15" fill="#ffb3bd"/>
+    <circle cx="352" cy="286" r="15" fill="#ffb3bd"/>
+  </g>
+</svg>
