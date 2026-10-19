@@ -1,0 +1,413 @@
+<title>Giggle Blanks</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: a single workbook column — theme shelf, then one prompt card at a time, then the story read-aloud page on ruled paper. */
+:root {
+  --paper: #fbf9f1;
+  --rule: #d6e2f3;
+  --margin: #f2a7a0;
+  --ink: #1f2c55;
+  --ink-soft: #55607f;
+  --card: #ffffff;
+  --line: #e4e2d6;
+  --sun: #ffcb3d;
+  --sun-ink: #3a2a00;
+  --blue: #2b59c3;
+  --blue-ink: #ffffff;
+  --fill: #fff1b8;
+  --fill-line: #e0a800;
+  --display: "Sniglet", "Comic Neue", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Verdana", system-ui, sans-serif;
+  --shadow: 0 2px 0 rgba(31,44,85,.12);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #1c2622; --rule: #2a3833; --margin: #6b3f3b;
+    --ink: #eef2e6; --ink-soft: #a9b6ac; --card: #24302b; --line: #34433d;
+    --sun: #ffcb3d; --sun-ink: #2b1f00; --blue: #7fa6ff; --blue-ink: #10204a;
+    --fill: #4a3d12; --fill-line: #ffcb3d; --shadow: 0 2px 0 rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #1c2622; --rule: #2a3833; --margin: #6b3f3b;
+  --ink: #eef2e6; --ink-soft: #a9b6ac; --card: #24302b; --line: #34433d;
+  --sun: #ffcb3d; --sun-ink: #2b1f00; --blue: #7fa6ff; --blue-ink: #10204a;
+  --fill: #4a3d12; --fill-line: #ffcb3d; --shadow: 0 2px 0 rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--body); font-size: 17px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 48px;
+}
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 800; margin: 0; text-wrap: balance; line-height: 1.1; }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.logo { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 7vw, 44px); letter-spacing: .5px; }
+.logo .blank {
+  display: inline-block; min-width: 2.6em; border-bottom: 5px solid var(--sun);
+  color: var(--blue); text-align: center; margin: 0 .08em;
+}
+.tag { color: var(--ink-soft); margin: 4px 0 0; }
+.linkbtn { background: none; border: 0; color: var(--blue); font-weight: 700; padding: 6px 0; text-decoration: underline; text-underline-offset: 3px; }
+
+.btn {
+  border: 2px solid var(--ink); border-radius: 14px; padding: 12px 20px;
+  background: var(--card); color: var(--ink); font-family: var(--display); font-size: 19px;
+  box-shadow: 0 3px 0 var(--ink); transition: transform .08s;
+}
+.btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.btn.go { background: var(--sun); color: var(--sun-ink); }
+.btn.blue { background: var(--blue); color: var(--blue-ink); }
+.btn[disabled] { opacity: .45; cursor: default; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+/* Theme shelf */
+.shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.theme {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  text-align: left; background: var(--card); border: 2px solid var(--line); border-radius: 16px;
+  padding: 14px; color: var(--ink); box-shadow: var(--shadow); min-height: 112px;
+}
+.theme:hover { border-color: var(--blue); }
+.theme .pic { font-size: 32px; line-height: 1; }
+.theme .name { font-family: var(--display); font-weight: 800; font-size: 18px; line-height: 1.15; }
+.theme .count { font-size: 13px; color: var(--ink-soft); }
+.theme.surprise { background: var(--sun); color: var(--sun-ink); border-color: var(--sun); }
+.theme.surprise .count { color: var(--sun-ink); }
+.stats { color: var(--ink-soft); font-size: 15px; }
+
+/* Prompt card */
+.story-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.story-head .theme-label { font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-soft); font-weight: 700; }
+.story-head h2 { font-size: clamp(24px, 5vw, 32px); }
+.progress { display: flex; gap: 6px; flex-wrap: wrap; }
+.dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--ink-soft); }
+.dot.done { background: var(--sun); border-color: var(--fill-line); }
+.dot.now { background: var(--blue); border-color: var(--blue); }
+
+.card {
+  background: var(--card); border: 2px solid var(--ink); border-radius: 22px;
+  padding: 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 5px 0 var(--ink);
+}
+.ask { font-size: 18px; color: var(--ink-soft); margin: 0; }
+.kind { font-family: var(--display); font-weight: 800; font-size: clamp(34px, 9vw, 52px); color: var(--blue); line-height: 1; }
+.meaning { font-size: 19px; margin: 0; }
+.examples { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; color: var(--ink-soft); font-size: 15px; }
+.chip { background: var(--fill); border-bottom: 2px solid var(--fill-line); color: var(--ink); padding: 2px 10px; border-radius: 8px; font-style: italic; }
+.answer {
+  width: 100%; font: 700 26px var(--body); color: var(--ink); background: transparent;
+  border: 0; border-bottom: 4px solid var(--ink); padding: 8px 2px; border-radius: 0;
+}
+.answer:focus { outline: none; border-bottom-color: var(--blue); }
+.nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.err { color: #b3261e; font-weight: 700; margin: 0; min-height: 1.5em; }
+:root[data-theme="dark"] .err { color: #ff9c92; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .err { color: #ff9c92; } }
+
+/* Story reveal on ruled paper */
+.page {
+  position: relative; border-radius: 6px; padding: 28px 22px 28px 46px;
+  background-color: var(--card);
+  background-image:
+    linear-gradient(to right, transparent 32px, var(--margin) 32px, var(--margin) 34px, transparent 34px);
+  box-shadow: var(--shadow); border: 1px solid var(--line);
+}
+.page h2 { font-size: clamp(26px, 6vw, 36px); margin-bottom: 14px; }
+.page .text {
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 36px, var(--rule) 36px, var(--rule) 38px, transparent 38px, transparent 40px);
+}
+.page .text p { font-size: clamp(19px, 4.4vw, 23px); line-height: 40px; margin: 0 0 40px; }
+.page .text p:last-child { margin-bottom: 0; }
+.w {
+  background: var(--fill); border-bottom: 3px solid var(--fill-line); padding: 0 4px;
+  font-weight: 700; border-radius: 4px; cursor: help; position: relative;
+}
+.w.reading { background: var(--sun); color: var(--sun-ink); }
+.legend { color: var(--ink-soft); font-size: 15px; margin: 0; }
+.tip {
+  position: fixed; z-index: 20; background: var(--ink); color: var(--paper); font-size: 14px;
+  padding: 6px 10px; border-radius: 8px; pointer-events: none; max-width: 240px;
+}
+.footnote { color: var(--ink-soft); font-size: 14px; text-align: center; }
+@media (max-width: 480px) {
+  .card { padding: 18px; }
+  .page { padding: 22px 14px 22px 42px; }
+  .btn { padding: 11px 16px; font-size: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+@keyframes pop { from { transform: scale(.96); opacity: .4; } to { transform: none; opacity: 1; } }
+.pop { animation: pop .18s ease-out; }
+</style>
+
+<div class="wrap" id="app"></div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const STORIES = /*STORIES*/[];
+
+const THEME_PICS = {
+  "Space":"🚀","Robots":"🤖","Superheroes":"🦸","Pirates":"🏴‍☠️","Under the Sea":"🐙","Beach Day":"🏖️",
+  "Dinosaurs":"🦕","Jungle Adventure":"🌴","At the Zoo":"🦒","School Days":"🎒","Field Trip":"🚌",
+  "Sports Day":"⚽","Birthday Party":"🎂","Snow Day":"⛄","Halloween Fun":"🎃","Camping Trip":"🏕️",
+  "On the Farm":"🐄","Wild Weather":"🌈","Castles and Kingdoms":"🏰","Friendly Dragons":"🐉",
+  "Friendly Monsters":"👾","In the Kitchen":"🥄","Pets":"🐶","Grocery Store":"🛒","Road Trip":"🚗",
+  "Bedtime":"🌙","Construction Site":"🚧"
+};
+
+const TYPES = {
+  "noun": { label:"Noun", art:"a", meaning:"A person, place, or thing.", ex:["banana","teacher","bathtub","rock","trumpet","lamp","pillow","spoon","cloud","sock"] },
+  "plural noun": { label:"Plural Noun", art:"a", meaning:"More than one person, place, or thing. It usually ends in -s.", ex:["pickles","shoes","cupcakes","buttons","pencils","marshmallows","socks","balloons","noodles","crayons"] },
+  "verb": { label:"Verb", art:"a", meaning:"An action word. Something you can do.", ex:["jump","wiggle","sing","sneeze","dance","hop","giggle","tiptoe","spin","clap"] },
+  "verb ending in ing": { label:"Verb ending in -ing", art:"a", meaning:"An action word that ends in -ing.", ex:["jumping","wiggling","singing","sneezing","dancing","hopping","giggling","tiptoeing","spinning","clapping"] },
+  "past tense verb": { label:"Past Tense Verb", art:"a", meaning:"An action word that already happened. It often ends in -ed.", ex:["jumped","wiggled","sang","sneezed","danced","hopped","giggled","tiptoed","spun","clapped"] },
+  "adjective": { label:"Adjective", art:"an", meaning:"A describing word. It tells what something is like.", ex:["fuzzy","enormous","sparkly","grumpy","squishy","tiny","slimy","fancy","bumpy","shiny"] },
+  "adverb": { label:"Adverb", art:"an", meaning:"A word that tells how something is done. It often ends in -ly.", ex:["quickly","loudly","slowly","sneakily","happily","gently","proudly","sleepily","bravely","wildly"] },
+  "number": { label:"Number", art:"a", meaning:"Any number at all.", ex:["7","12","100","3","a million","42","five","zero"] },
+  "color": { label:"Color", art:"a", meaning:"Any color.", ex:["purple","green","orange","silver","pink","polka-dot"] },
+  "animal": { label:"Animal", art:"an", meaning:"Any kind of animal.", ex:["llama","penguin","hippo","octopus","hamster","giraffe","snail","walrus"] },
+  "food": { label:"Food", art:"a", meaning:"Anything you can eat.", ex:["spaghetti","broccoli","pancake","cheese","popcorn","pickle","meatball","jelly"] },
+  "place": { label:"Place", art:"a", meaning:"Somewhere you can go.", ex:["the library","the moon","Grandma's house","the park","the bathtub","Alaska"] },
+  "body part": { label:"Body Part", art:"a", meaning:"A part of your body.", ex:["elbow","nose","knee","eyebrow","pinky toe","belly button","ear"] },
+  "silly word": { label:"Silly Word", art:"a", meaning:"A made-up word. The sillier the better!", ex:["flibbertigibbet","bloop","snorkeldoodle","wibble","zonkers","pickleplop"] },
+  "sound": { label:"Sound", art:"a", meaning:"A noise something makes.", ex:["boing","moo","splat","honk","whoosh","beep","kaboom"] },
+  "exclamation": { label:"Exclamation", art:"an", meaning:"Something you shout when you are surprised or excited.", ex:["Wow","Yikes","Hooray","Oh my","Ta-da","Whoa","Holy guacamole"] },
+  "name": { label:"Name", art:"a", meaning:"Someone's name. It can be a real person or a made-up one.", ex:["Grandpa Joe","Ms. Pickles","Sammy","Captain Fluff","Aunt Rosie"] }
+};
+
+/* ---------- helpers ---------- */
+const $ = (sel, el=document) => el.querySelector(sel);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function store(key, val){ try { if (val === undefined) return JSON.parse(localStorage.getItem(key) || "null"); localStorage.setItem(key, JSON.stringify(val)); } catch(e) { return null; } }
+
+const THEMES = [...new Set(STORIES.map(s => s.theme))];
+const byTheme = t => STORIES.filter(s => s.theme === t);
+let played = new Set(store("gb-played") || []);
+function markPlayed(id){ played.add(id); store("gb-played", [...played]); }
+
+function chooseStory(theme){
+  const pool = theme ? byTheme(theme) : STORIES;
+  const fresh = pool.filter(s => !played.has(s.id));
+  return pick(fresh.length ? fresh : pool);
+}
+
+function blanksOf(story){
+  const out = []; story.text.replace(/\{([^{}]+)\}/g, (_, t) => { out.push(t); return ""; });
+  return out;
+}
+
+/* Build the finished story as HTML, fixing a/an before each filled word. */
+function renderStory(story, answers){
+  let i = 0;
+  const tokens = [];
+  const withMarks = story.text.replace(/\{([^{}]+)\}/g, (_, t) => { tokens.push({ t, w: answers[i++] || "" }); return "\u0000" + (tokens.length-1) + "\u0000"; });
+  // a/an correction: "a" or "A" right before a marker
+  const fixed = withMarks.replace(/\b(a|A|an|An)(\s+)\u0000(\d+)\u0000/g, (m, art, sp, n) => {
+    const word = tokens[+n].w.trim();
+    const vowel = /^[aeiou]/i.test(word) && !/^(uni|use|usu|one|eu)/i.test(word);
+    const lower = vowel ? "an" : "a";
+    const out = art[0] === "A" ? lower[0].toUpperCase() + lower.slice(1) : lower;
+    return out + sp + "\u0000" + n + "\u0000";
+  });
+  const paras = fixed.split(/\n\s*\n/);
+  return paras.map(p => {
+    const html = esc(p).replace(/\u0000(\d+)\u0000/g, (m, n) => {
+      const tk = tokens[+n];
+      const label = (TYPES[tk.t] || {label: tk.t}).label;
+      return `<span class="w" tabindex="0" data-type="${esc(label)}">${esc(tk.w)}</span>`;
+    });
+    return `<p>${html.replace(/\n/g, "<br>")}</p>`;
+  }).join("");
+}
+
+/* ---------- state ---------- */
+let state = { view: "home" };
+
+function go(next){ state = Object.assign({}, state, next); draw(); window.scrollTo(0,0); }
+
+function startStory(theme, keepStory){
+  const story = keepStory || chooseStory(theme);
+  const blanks = blanksOf(story);
+  go({ view: "ask", theme: theme || null, story, blanks, answers: Array(blanks.length).fill(""), step: 0 });
+}
+
+/* ---------- views ---------- */
+function draw(){
+  stopSpeech();
+  const app = $("#app");
+  if (state.view === "home") app.innerHTML = homeView();
+  else if (state.view === "ask") app.innerHTML = askView();
+  else if (state.view === "story") app.innerHTML = storyView();
+  bind();
+}
+
+function header(){
+  return `<header class="top">
+    <div>
+      <div class="logo">Giggle <span class="blank">Blanks</span></div>
+      <p class="tag">Fill in the words. Then read the silly story out loud.</p>
+    </div>
+    ${state.view !== "home" ? `<button class="linkbtn" data-act="home">All themes</button>` : ""}
+  </header>`;
+}
+
+function homeView(){
+  const tiles = THEMES.map(t => {
+    const n = byTheme(t).length;
+    const left = byTheme(t).filter(s => !played.has(s.id)).length;
+    return `<button class="theme" data-act="theme" data-theme="${esc(t)}">
+      <span class="pic" aria-hidden="true">${THEME_PICS[t] || "📖"}</span>
+      <span class="name">${esc(t)}</span>
+      <span class="count">${left === n ? n + " stories" : left + " of " + n + " new"}</span>
+    </button>`;
+  }).join("");
+  return `${header()}
+    <section class="shelf" aria-label="Pick a theme">
+      <button class="theme surprise" data-act="theme" data-theme="">
+        <span class="pic" aria-hidden="true">🎲</span>
+        <span class="name">Surprise me!</span>
+        <span class="count">Any story at all</span>
+      </button>
+      ${tiles}
+    </section>
+    <div class="row" style="justify-content:space-between">
+      <span class="stats">${STORIES.length} stories in ${THEMES.length} themes · ${played.size} played</span>
+      ${played.size ? `<button class="linkbtn" data-act="reset">Mark all as new</button>` : ""}
+    </div>`;
+}
+
+function askView(){
+  const { story, blanks, answers, step } = state;
+  const type = blanks[step];
+  const info = TYPES[type] || { label: type, art: "a", meaning: "", ex: [] };
+  const dots = blanks.map((_, i) => `<span class="dot ${i < step || (answers[i] && i !== step) ? "done" : ""} ${i === step ? "now" : ""}"></span>`).join("");
+  const ex = shuffle(info.ex).slice(0, 3).map(w => `<span class="chip">${esc(w)}</span>`).join("");
+  const last = step === blanks.length - 1;
+  return `${header()}
+    <div class="story-head">
+      <div>
+        <div class="theme-label">${esc(story.theme)} · Word ${step + 1} of ${blanks.length}</div>
+        <h2>${esc(story.title)}</h2>
+      </div>
+    </div>
+    <div class="progress" aria-hidden="true">${dots}</div>
+    <form class="card pop" id="askForm" autocomplete="off">
+      <p class="ask">Give me ${info.art}</p>
+      <div class="kind">${esc(info.label)}</div>
+      <p class="meaning">${esc(info.meaning)}</p>
+      <div class="examples">Like: ${ex}</div>
+      <label for="answer" class="ask" style="position:absolute;left:-9999px">Your ${esc(info.label)}</label>
+      <input class="answer" id="answer" value="${esc(answers[step])}" maxlength="40" autocapitalize="off" spellcheck="false" placeholder="Type your word">
+      <p class="err" id="err" aria-live="polite"></p>
+      <div class="nav">
+        <div class="row">
+          <button type="button" class="btn" data-act="back" ${step === 0 ? "disabled" : ""}>Back</button>
+          <button type="button" class="btn" data-act="helpme">Pick for me</button>
+        </div>
+        <button type="submit" class="btn go">${last ? "Show my story!" : "Next"}</button>
+      </div>
+    </form>
+    <p class="footnote">No peeking! The story stays secret until every word is in.</p>`;
+}
+
+function storyView(){
+  const { story, answers } = state;
+  const canSpeak = "speechSynthesis" in window;
+  return `${header()}
+    <article class="page pop">
+      <div class="theme-label" style="font-size:14px;text-transform:uppercase;letter-spacing:1.5px;color:var(--ink-soft);font-weight:700;margin-bottom:6px">${esc(story.theme)}</div>
+      <h2>${esc(story.title)}</h2>
+      <div class="text" id="storyText">${renderStory(story, answers)}</div>
+    </article>
+    <p class="legend">Tap a yellow word to see what kind of word it was.</p>
+    <div class="row">
+      ${canSpeak ? `<button class="btn blue" data-act="speak" id="speakBtn">Read it to me</button>` : ""}
+      <button class="btn go" data-act="next">Next ${state.theme ? esc(state.theme) : "surprise"} story</button>
+      <button class="btn" data-act="again">Same story, new words</button>
+    </div>`;
+}
+
+/* ---------- events ---------- */
+function bind(){
+  document.querySelectorAll("[data-act]").forEach(el => el.addEventListener("click", onAct));
+  const form = $("#askForm");
+  if (form) {
+    const input = $("#answer");
+    setTimeout(() => { try { input.focus({ preventScroll: true }); } catch(e){} }, 30);
+    form.addEventListener("submit", e => { e.preventDefault(); saveAndAdvance(); });
+    input.addEventListener("input", () => { $("#err").textContent = ""; });
+  }
+  document.querySelectorAll(".w").forEach(w => {
+    w.addEventListener("click", showTip);
+    w.addEventListener("focus", showTip);
+    w.addEventListener("blur", hideTip);
+  });
+}
+
+function saveAndAdvance(){
+  const val = $("#answer").value.trim();
+  if (!val) { $("#err").textContent = "Type a word first, or tap Pick for me."; return; }
+  const answers = state.answers.slice(); answers[state.step] = val;
+  if (state.step < state.blanks.length - 1) go({ answers, step: state.step + 1 });
+  else { markPlayed(state.story.id); go({ answers, view: "story" }); }
+}
+
+function onAct(e){
+  const act = e.currentTarget.dataset.act;
+  if (act === "home") go({ view: "home" });
+  else if (act === "theme") startStory(e.currentTarget.dataset.theme || null);
+  else if (act === "reset") { played = new Set(); store("gb-played", []); draw(); }
+  else if (act === "back" && state.step > 0) {
+    const answers = state.answers.slice(); answers[state.step] = $("#answer").value.trim();
+    go({ answers, step: state.step - 1 });
+  }
+  else if (act === "helpme") {
+    const info = TYPES[state.blanks[state.step]];
+    if (info) { $("#answer").value = pick(info.ex); $("#err").textContent = ""; }
+  }
+  else if (act === "next") startStory(state.theme);
+  else if (act === "again") startStory(state.theme, state.story);
+  else if (act === "speak") toggleSpeech();
+}
+
+let tipTimer;
+function showTip(e){
+  const t = $("#tip"), r = e.currentTarget.getBoundingClientRect();
+  t.textContent = e.currentTarget.dataset.type; t.hidden = false;
+  const left = Math.min(window.innerWidth - t.offsetWidth - 8, Math.max(8, r.left));
+  t.style.left = left + "px"; t.style.top = Math.max(8, r.top - t.offsetHeight - 6) + "px";
+  clearTimeout(tipTimer); tipTimer = setTimeout(hideTip, 1800);
+}
+function hideTip(){ $("#tip").hidden = true; }
+window.addEventListener("scroll", hideTip, { passive: true });
+
+/* ---------- read aloud ---------- */
+let speaking = false;
+function stopSpeech(){ try { if (speaking) speechSynthesis.cancel(); } catch(e){} speaking = false; }
+function toggleSpeech(){
+  const btn = $("#speakBtn");
+  if (speaking) { stopSpeech(); if (btn) btn.textContent = "Read it to me"; return; }
+  try {
+    const text = state.story.title + ". " + $("#storyText").innerText;
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.92;
+    u.onend = u.onerror = () => { speaking = false; if (btn) btn.textContent = "Read it to me"; };
+    speechSynthesis.cancel(); speechSynthesis.speak(u); speaking = true;
+    if (btn) btn.textContent = "Stop reading";
+  } catch(e) { if (btn) btn.hidden = true; }
+}
+
+draw();
+</script>

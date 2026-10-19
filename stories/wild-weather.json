@@ -1,0 +1,62 @@
+[
+  {
+    "id": "wild-weather-01",
+    "theme": "Wild Weather",
+    "title": "Weather Wendy's Forecast",
+    "text": "Good morning! This is Weather Wendy with your forecast for Maple Town.\n\nToday will start out sunny and {adjective}. Around lunchtime, a light breeze will blow in from the lake. It will smell a little bit like {food}.\n\nThis afternoon, look out for a gentle shower of {plural noun}. They will fall softly, so you may want to carry a {noun} instead of an umbrella. Tonight the clouds will turn {color} and start {verb ending in ing}. Experts say this is perfectly normal for a Tuesday.\n\nTomorrow, the temperature will reach {number} degrees. Please wear sunscreen, a hat, and your most {adjective} sneakers. The wind will blow {adverb} all day. This has been Weather Wendy. Remember, if the sky starts to {verb}, just go inside and have a snack!"
+  },
+  {
+    "id": "wild-weather-02",
+    "theme": "Wild Weather",
+    "title": "Breaking News from Puddle Lane",
+    "text": "This is Max Miller with breaking news from Puddle Lane.\n\nAt nine o'clock this morning, a small {adjective} cloud floated over Lincoln School and began raining {plural noun}. Students watched {adverb} from the classroom windows.\n\n\"I have never seen anything like it,\" said Principal Gray. \"It was very {adjective}. We had to skip recess and {verb} instead.\"\n\nThe cloud then moved to the park, where it rained on a man {verb ending in ing} with his dog. The man said it felt like being tickled by a {noun}.\n\nWeather experts say the cloud is shaped like a {animal} and is now heading toward the library. Neighbors are asked to keep their windows closed and their {plural noun} indoors.\n\nWe will keep you updated. Back to you, {name}!"
+  },
+  {
+    "id": "wild-weather-03",
+    "theme": "Wild Weather",
+    "title": "My Weather Journal for Science",
+    "text": "Our teacher, Mr. Reed, asked us to write down the weather every day this week. Here is my weather journal.\n\nMonday: Sunny and warm. A cloud shaped like a {noun} floated over my house all day.\nTuesday: Very windy. The wind blew my hat off and carried it {adverb} all the way to the {place}.\nWednesday: Foggy. The fog was so thick that I said good morning to a {noun}.\nThursday: It rained for {number} hours. The puddles were deep enough to {verb} in.\nFriday: A rainbow came out after lunch. It had red, orange, yellow, green, blue, purple, and {color}.\n\nI measured the rain with a cup. On Thursday it filled up with water and three {plural noun}. Mr. Reed says that is very {adjective} and I should write a report about it.\n\nNext week I will try to catch a snowflake and keep it in the freezer next to the {plural noun}."
+  },
+  {
+    "id": "wild-weather-04",
+    "theme": "Wild Weather",
+    "title": "Snowman Instructions from a Snow Expert",
+    "text": "When it snows, everyone wants to build a snowman. Here is how to make the best one on your street.\n\nStep 1: Put on your boots, your mittens, and your {adjective} scarf.\nStep 2: Roll a big ball of snow for the bottom. Keep rolling until it is as big as a {noun}.\nStep 3: Roll a medium ball for the middle and a small ball for the head. Stack them {adverb}.\nStep 4: Give your snowman a face. Use two {plural noun} for the eyes and a carrot for the nose.\nStep 5: Add sticks for arms. Some people also give their snowman a {noun} to hold.\nStep 6: Name your snowman. Ours is named {silly word}.\n\nWhen you are done, stand back and say hello. If your snowman starts to {verb}, that means you did a great job. Last winter, ours {past tense verb} all the way to the mailbox and back. Then go inside and drink hot cocoa with {plural noun} on top."
+  },
+  {
+    "id": "wild-weather-05",
+    "theme": "Wild Weather",
+    "title": "Windy Day Rules at School",
+    "text": "Good morning, students! This is Principal Park with an important announcement. The weather report says today will be the windiest day of the year.\n\nPlease follow these windy day rules:\n1. Hold on to your homework {adverb}. Yesterday, the spelling tests blew all the way to the {noun}.\n2. Do not fly kites at lunch. Last time, a kite pulled Mr. Bell's {noun} right off the table.\n3. If your hair starts to look {adjective}, that is okay. Everyone's hair will look that way today.\n4. Keep your hats in your backpacks. We do not want any more hats stuck on the flagpole next to the {plural noun}.\n5. If you see a flying {noun}, please do not chase it. Tell a teacher, and a teacher will {verb} until it lands.\n\nRecess will be indoors today. We will play board games, read books, and do the {animal} dance in the gym. Thank you for {verb ending in ing} so nicely. Have a {adjective} day!"
+  },
+  {
+    "id": "wild-weather-06",
+    "theme": "Wild Weather",
+    "title": "A Letter to Mr. Cloud",
+    "text": "Dear Mr. Cloud,\n\nMy name is Lily. I am seven years old, and I live in the yellow house on Oak Street. You float over my house almost every day.\n\nI have a few questions for you. Why are you so {adjective} on Mondays? Do you ever get tired of {verb ending in ing}? What do you eat for breakfast? My grandpa says clouds eat {plural noun}, but I think he is joking.\n\nI also have a favor to ask. My birthday party is on Saturday. Could you please rain {plural noun} instead of water? That would be so {adjective}. My friends would love it. If you say yes, I will {verb} {adverb} for you and draw you a picture of a {noun}.\n\nYour friend on the ground,\nLily\n\nP.S. Please tell the rainbow I like its {color} stripe the best."
+  },
+  {
+    "id": "wild-weather-07",
+    "theme": "Wild Weather",
+    "title": "Grandma Sky's Rainbow Recipe",
+    "text": "Have you ever wondered how a rainbow is made? Here is the secret recipe, straight from Grandma Sky's kitchen.\n\nYou will need:\n1 big cloud\n2 cups of sunshine\nA bucket of rain\nA pinch of glitter\nA {adjective} spoon\n\nFirst, put the cloud in a large bowl. Pour in the rain and stir it {adverb} until it starts to {verb}. Then add the sunshine one cup at a time.\n\nNext, sprinkle in the glitter and a handful of {plural noun}. Grandma Sky says this is what makes the colors so {adjective}. If you want an extra stripe, add a little bit of {food}.\n\nBake the rainbow in the sky for {number} minutes. When it is done, it should stretch from the school all the way to the {noun}. Serve it after a rainy afternoon, and do not forget to shout \"{exclamation}!\""
+  },
+  {
+    "id": "wild-weather-08",
+    "theme": "Wild Weather",
+    "title": "Greetings from Breezy Hills",
+    "text": "Dear Aunt Rose,\n\nGreetings from Breezy Hills, the windiest town in the whole country! We are staying here for {number} days.\n\nThe wind here never stops. This morning it blew my pancakes right off my plate and onto a {noun}. Mom had to hold on to her {adjective} sunglasses all through breakfast.\n\nEverybody in town flies kites. Our neighbor has a kite shaped like a {animal} that is as big as a bus. Dad bought me a kite too. It flew {adverb} and got stuck on a {noun} for an hour.\n\nYesterday we went to the Wind Museum. They have a jar of wind from long ago. It smells like {plural noun}. The museum guide told us to {verb} when he opened it. Tomorrow we will see the Breezy Hills Parade, where everyone goes {verb ending in ing} down Main Street.\n\nLove,\nBen"
+  },
+  {
+    "id": "wild-weather-09",
+    "theme": "Wild Weather",
+    "title": "Dr. Riley's Weather Facts",
+    "text": "Hi! I am Dr. Riley, junior weather scientist. Here are some fun facts about weather that I learned this year.\n\nFact 1: Snowflakes have six sides. No two snowflakes look the same, but some look a little bit like {plural noun}.\nFact 2: Thunder is the sound clouds make when they try to {verb}.\nFact 3: Hail is little balls of ice. In my town, the hail is soft and about the size of a {noun}.\nFact 4: Fog is a cloud that got sleepy and decided to {verb} on the ground.\nFact 5: The hottest day ever in my backyard was {number} degrees. My popsicle melted {adverb} and dripped on my {body part}.\nFact 6: When it rains while the sun is out, a {adjective} rainbow appears. If you look closely, you can see a {animal} {verb ending in ing} on it.\n\nI want to be a real weather scientist when I grow up. I will wear a {adjective} lab coat and drive a truck full of {plural noun}."
+  },
+  {
+    "id": "wild-weather-10",
+    "theme": "Wild Weather",
+    "title": "The Town Weather Order Form",
+    "text": "Thank you for calling the Town Weather Office! To order your weather, please fill out this form and drop it in the {adjective} box outside City Hall.\n\nName: Jada, age 7\nWeather needed for: Saturday, my soccer game\nWhat kind of sky would you like? A blue sky with {number} fluffy clouds. Please make one of the clouds look like a {noun}.\nHow warm should it be? Warm enough to {verb} outside, but not so hot that my {food} melts.\nWould you like wind? Yes, please. Just a little bit, so our team flag can wave {adverb}.\n\nAnything else? If it has to rain, please make it rain {plural noun}. Our coach says that would be very {adjective}. Also, please send a rainbow right after the game. My whole team will be {verb ending in ing} on the field when it shows up.\n\nThank you! I will pay you with a hug and two {plural noun}."
+  }
+]
