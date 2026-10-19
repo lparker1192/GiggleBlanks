@@ -34,7 +34,7 @@ Parts of speech (the learning focus — most blanks should be these):
 - `{adjective}` — a describing word (fuzzy, enormous)
 - `{adverb}` — describes how something is done, usually ends in -ly (quickly, loudly)
 
-Light extras (use sparingly, at most 3 per story):
+Light extras (use sparingly, at most 4 per story):
 - `{number}`, `{color}`, `{animal}`, `{food}`, `{place}`, `{body part}`,
   `{silly word}`, `{sound}`, `{exclamation}`, `{name}`
 
@@ -42,9 +42,11 @@ Light extras (use sparingly, at most 3 per story):
 
 1. Every blank is its own word — NEVER design a story that expects a word to repeat.
    Do not write "the {noun}" and later refer back to "the same thing".
-2. 8 to 14 blanks per story. At least 6 must be parts of speech (first list).
-   Use at least 4 different part-of-speech types per story.
-3. Length: 90–180 words of story text (not counting blanks).
+2. 12 to 16 blanks per story, like a classic Mad Libs page. At least 9 must be parts of
+   speech (first list). Use at least 4 different part-of-speech types per story.
+3. Length: 100–165 words of story text (not counting blanks), and no more than 12 words
+   per blank on average. Nearly every sentence should have a blank; avoid long stretches
+   of plain setup. Short and punchy beats long and explained.
 4. Grammar must work with ANY reasonable answer:
    - Write `a` before a blank (the app fixes a/an automatically). Never write `an {..}`.
    - Do not start a sentence with a blank.

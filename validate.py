@@ -45,20 +45,22 @@ def check_story(s, seen_ids, seen_titles):
     if text.count("{") != text.count("}") or text.count("{") != len(blanks):
         probs.append("unbalanced braces")
     n = len(blanks)
-    if not 8 <= n <= 14:
-        probs.append(f"{n} blanks (need 8-14)")
+    if not 12 <= n <= 16:
+        probs.append(f"{n} blanks (need 12-16)")
     pos = [b for b in blanks if b in POS]
-    if len(pos) < 6:
-        probs.append(f"only {len(pos)} part-of-speech blanks (need 6+)")
+    if len(pos) < 9:
+        probs.append(f"only {len(pos)} part-of-speech blanks (need 9+)")
     if len(set(pos)) < 4:
         probs.append(f"only {len(set(pos))} part-of-speech types (need 4+)")
     extras = [b for b in blanks if b in EXTRAS]
-    if len(extras) > 3:
-        probs.append(f"{len(extras)} extra-type blanks (max 3)")
+    if len(extras) > 4:
+        probs.append(f"{len(extras)} extra-type blanks (max 4)")
 
     words = len(BLANK.sub("", text).split())
-    if not 90 <= words <= 180:
-        probs.append(f"{words} words of fixed text (need 90-180)")
+    if not 100 <= words <= 165:
+        probs.append(f"{words} words of fixed text (need 100-165)")
+    if words / max(n, 1) > 12:
+        probs.append(f"{words / max(n, 1):.1f} words per blank (max 12)")
 
     if re.search(r"\ban \{", text, re.I):
         probs.append("'an' before a blank (write 'a')")
