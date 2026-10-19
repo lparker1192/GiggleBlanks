@@ -35,7 +35,10 @@ def main():
     out = os.path.join(HERE, "giggle-blanks.html")
     with open(out, "w") as f:
         f.write(page)
-    # Standalone version for regular web hosting (GitHub Pages): full HTML document.
+    # Standalone version for regular web hosting (GitHub Pages): full HTML document,
+    # with the page's <title> moved into <head> so previews and bookmarks see it.
+    title_tag = "<title>Giggle Blanks</title>"
+    body = page.replace(title_tag + "\n", "", 1)
     standalone = (
         "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"
@@ -45,7 +48,8 @@ def main():
         "<link rel=\"manifest\" href=\"manifest.json\">\n"
         "<meta name=\"theme-color\" content=\"#ffcb3d\">\n"
         "<meta name=\"apple-mobile-web-app-title\" content=\"Giggle Blanks\">\n"
-        "</head>\n<body>\n" + page + "\n</body>\n</html>\n"
+        + title_tag + "\n"
+        "</head>\n<body>\n" + body + "\n</body>\n</html>\n"
     )
     index = os.path.join(HERE, "index.html")
     with open(index, "w") as f:
