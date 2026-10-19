@@ -35,8 +35,17 @@ def main():
     out = os.path.join(HERE, "giggle-blanks.html")
     with open(out, "w") as f:
         f.write(page)
+    # Standalone version for regular web hosting (GitHub Pages): full HTML document.
+    standalone = (
+        "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
+        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"
+        "</head>\n<body>\n" + page + "\n</body>\n</html>\n"
+    )
+    index = os.path.join(HERE, "index.html")
+    with open(index, "w") as f:
+        f.write(standalone)
     themes = len({s["theme"] for s in stories})
-    print(f"Built {out}: {len(stories)} stories, {themes} themes, {len(page)//1024} KB")
+    print(f"Built {out} and {index}: {len(stories)} stories, {themes} themes, {len(page)//1024} KB")
 
 
 if __name__ == "__main__":

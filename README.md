@@ -15,7 +15,8 @@ example words. Then the finished story is revealed for reading aloud.
 
 | Path | What it is |
 | --- | --- |
-| `giggle-blanks.html` | The built app. Open it in any browser. |
+| `index.html` | The built app as a standalone web page (used by GitHub Pages). |
+| `giggle-blanks.html` | The same app without the page wrapper, for embedding. |
 | `stories/*.json` | The story library, one file per theme. |
 | `app.template.html` | App page with a placeholder where the stories go. |
 | `build.py` | Combines the template and all stories into `giggle-blanks.html`. |
@@ -31,7 +32,7 @@ example words. Then the finished story is revealed for reading aloud.
    python3 validate.py stories/*.json
    ```
 
-3. Rebuild the app:
+3. Rebuild the app (updates both `index.html` and `giggle-blanks.html`):
 
    ```
    python3 build.py
