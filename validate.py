@@ -69,8 +69,8 @@ def check_story(s, seen_ids, seen_titles):
     # blank at the start of a sentence or paragraph
     if re.search(r'(^|[.!?]["”]?\s+|\n\s*)["“]?\{', text):
         probs.append("sentence starts with a blank")
-    low = " " + text.lower() + " "
-    hits = [w.strip() for w in BANNED if w in low]
+    low = text.lower()
+    hits = [w.strip() for w in BANNED if re.search(r"\b" + re.escape(w.strip()) + r"\b", low)]
     if hits:
         probs.append(f"check wording: {hits}")
     return probs
