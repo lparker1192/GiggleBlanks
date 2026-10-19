@@ -115,6 +115,40 @@ header.top { display: flex; align-items: center; justify-content: space-between;
 :root[data-theme="dark"] .err { color: #ff9c92; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .err { color: #ff9c92; } }
 
+/* Word-asking screen: fills the visible area above the on-screen keyboard */
+body.asking { overflow: hidden; }
+.askscreen {
+  position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 5;
+  background: var(--paper); display: flex; justify-content: center;
+  padding-top: max(10px, env(safe-area-inset-top, 0px));
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.askinner { width: 100%; max-width: 760px; height: 100%; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+.asktop { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex: none; }
+.asktop .theme-label, .askhead .theme-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-soft); font-weight: 700; }
+.askscroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; }
+.asktitle { font-size: clamp(22px, 5vw, 30px); }
+.askscroll .card { flex: none; }
+.askbottom { flex: none; display: flex; flex-direction: column; gap: 6px; padding-bottom: 2px; }
+.askbottom .nav { flex-wrap: nowrap; }
+.askbottom .nav .go { flex: 1; }
+.askbottom .err { min-height: 1.2em; font-size: 15px; }
+.sr { position: absolute; left: -9999px; }
+.askscreen.tight .askinner { gap: 6px; }
+.askscreen.tight .asktitle { font-size: 18px; }
+.askscreen.tight .askhead .theme-label { display: none; }
+.askscreen.tight .dot { width: 10px; height: 10px; }
+.askscreen.tight .card { padding: 12px 14px; gap: 6px; border-radius: 16px; box-shadow: 0 3px 0 var(--ink); }
+.askscreen.tight .ask { font-size: 15px; }
+.askscreen.tight .kind { font-size: 32px; }
+.askscreen.tight .meaning { font-size: 16px; }
+.askscreen.tight .examples { font-size: 14px; flex-wrap: nowrap; overflow: hidden; }
+.askscreen.tight .footnote { display: none; }
+.askscreen.tight .answer { font-size: 22px; padding: 4px 2px; }
+.askscreen.tight .btn { padding: 8px 14px; font-size: 17px; }
+
 /* Story reveal on ruled paper */
 .page {
   position: relative; border-radius: 6px; padding: 28px 22px 28px 46px;
@@ -131,8 +165,10 @@ header.top { display: flex; align-items: center; justify-content: space-between;
 .page .text p:last-child { margin-bottom: 0; }
 .w {
   background: var(--fill); border-bottom: 3px solid var(--fill-line); padding: 0 4px;
-  font-weight: 700; border-radius: 4px; cursor: help; position: relative;
+  font-weight: 700; border-radius: 4px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
+.w:hover { background: var(--sun); color: var(--sun-ink); }
 .w.reading { background: var(--sun); color: var(--sun-ink); }
 .legend { color: var(--ink-soft); font-size: 15px; margin: 0; }
 .tip {
@@ -151,7 +187,6 @@ header.top { display: flex; align-items: center; justify-content: space-between;
 </style>
 
 <div class="wrap" id="app"></div>
-<div class="tip" id="tip" hidden></div>
 
 <script>
 const STORIES = /*STORIES*/[];
@@ -226,7 +261,7 @@ function renderStory(story, answers){
     const html = esc(p).replace(/\u0000(\d+)\u0000/g, (m, n) => {
       const tk = tokens[+n];
       const label = (TYPES[tk.t] || {label: tk.t}).label;
-      return `<span class="w" tabindex="0" data-type="${esc(label)}">${esc(tk.w)}</span>`;
+      return `<span class="w" role="button" tabindex="0" data-i="${n}" aria-label="${esc(tk.w)} (${esc(label)}). Tap to change.">${esc(tk.w)}</span>`;
     });
     return `<p>${html.replace(/\n/g, "<br>")}</p>`;
   }).join("");
@@ -235,20 +270,55 @@ function renderStory(story, answers){
 /* ---------- state ---------- */
 let state = { view: "home" };
 
-function go(next){ state = Object.assign({}, state, next); draw(); window.scrollTo(0,0); }
+/* Save the game in progress so a reload or app switch doesn't lose it. */
+function saveGame(){
+  if (state.view === "home" || !state.story) { store("gb-game", null); return; }
+  store("gb-game", { view: state.view, theme: state.theme, id: state.story.id,
+    answers: state.answers, step: state.step, editing: !!state.editing });
+}
+function restoreGame(){
+  const g = store("gb-game");
+  if (!g || !g.id) return;
+  const story = STORIES.find(s => s.id === g.id);
+  if (!story) return;
+  const blanks = blanksOf(story);
+  if (!Array.isArray(g.answers) || g.answers.length !== blanks.length) return;
+  const step = Math.min(Math.max(0, g.step | 0), blanks.length - 1);
+  const view = g.view === "story" ? "story" : "ask";
+  state = { view, theme: g.theme || null, story, blanks, answers: g.answers.map(a => String(a || "")),
+            step, editing: view === "ask" && !!g.editing };
+}
+
+function go(next){
+  const prevView = state.view;
+  state = Object.assign({}, state, next);
+  saveGame();
+  draw();
+  if (state.view === "story" && next.restoreScroll) window.scrollTo(0, state.storyScroll || 0);
+  else if (state.view !== "ask" && (prevView !== state.view || next.scrollTop)) window.scrollTo(0, 0);
+}
 
 function startStory(theme, keepStory){
   const story = keepStory || chooseStory(theme);
   const blanks = blanksOf(story);
-  go({ view: "ask", theme: theme || null, story, blanks, answers: Array(blanks.length).fill(""), step: 0 });
+  go({ view: "ask", theme: theme || null, story, blanks, answers: Array(blanks.length).fill(""), step: 0, editing: false });
 }
 
 /* ---------- views ---------- */
 function draw(){
   stopSpeech();
   const app = $("#app");
+  if (state.view === "ask") {
+    document.body.classList.add("asking");
+    if (!$("#askScreen")) { app.innerHTML = askShell(); bindAsk(); window.scrollTo(0, 0); }
+    fillAsk();
+    fitAsk();
+    focusAnswer();
+    return;
+  }
+  document.body.classList.remove("asking");
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   if (state.view === "home") app.innerHTML = homeView();
-  else if (state.view === "ask") app.innerHTML = askView();
   else if (state.view === "story") app.innerHTML = storyView();
   bind();
 }
@@ -288,39 +358,95 @@ function homeView(){
     </div>`;
 }
 
-function askView(){
-  const { story, blanks, answers, step } = state;
+/* The asking screen is built once per game and then updated in place,
+   so the text box (and the phone keyboard) stays put between words. */
+function askShell(){
+  return `<div class="askscreen" id="askScreen">
+    <div class="askinner">
+      <div class="asktop">
+        <button type="button" class="linkbtn" data-act="home">All themes</button>
+        <span class="theme-label" id="askCount"></span>
+      </div>
+      <div class="askscroll" id="askScroll">
+        <div class="askhead">
+          <div class="theme-label" id="askTheme"></div>
+          <h2 class="asktitle" id="askTitle"></h2>
+        </div>
+        <div class="progress" id="askDots" aria-hidden="true"></div>
+        <div class="card">
+          <p class="ask" id="askArt"></p>
+          <div class="kind" id="askKind"></div>
+          <p class="meaning" id="askMeaning"></p>
+          <div class="examples" id="askEx"></div>
+        </div>
+        <p class="footnote" id="askNote"></p>
+      </div>
+      <form class="askbottom" id="askForm" autocomplete="off" novalidate>
+        <label for="answer" class="sr">Your word</label>
+        <input class="answer" id="answer" type="text" maxlength="40" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="Type your word" enterkeyhint="next">
+        <p class="err" id="err" aria-live="polite"></p>
+        <div class="nav">
+          <button type="button" class="btn keep" data-act="back" id="backBtn">Back</button>
+          <button type="button" class="btn keep" data-act="helpme">Pick for me</button>
+          <button type="submit" class="btn go keep" id="nextBtn">Next</button>
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+
+function fillAsk(){
+  const { story, blanks, answers, step, editing } = state;
   const type = blanks[step];
   const info = TYPES[type] || { label: type, art: "a", meaning: "", ex: [] };
-  const dots = blanks.map((_, i) => `<span class="dot ${i < step || (answers[i] && i !== step) ? "done" : ""} ${i === step ? "now" : ""}"></span>`).join("");
-  const ex = shuffle(info.ex).slice(0, 3).map(w => `<span class="chip">${esc(w)}</span>`).join("");
   const last = step === blanks.length - 1;
-  return `${header()}
-    <div class="story-head">
-      <div>
-        <div class="theme-label">${esc(story.theme)} · Word ${step + 1} of ${blanks.length}</div>
-        <h2>${esc(story.title)}</h2>
-      </div>
-    </div>
-    <div class="progress" aria-hidden="true">${dots}</div>
-    <form class="card pop" id="askForm" autocomplete="off">
-      <p class="ask">Give me ${info.art}</p>
-      <div class="kind">${esc(info.label)}</div>
-      <p class="meaning">${esc(info.meaning)}</p>
-      <div class="examples">Like: ${ex}</div>
-      <label for="answer" class="ask" style="position:absolute;left:-9999px">Your ${esc(info.label)}</label>
-      <input class="answer" id="answer" value="${esc(answers[step])}" maxlength="40" autocapitalize="off" spellcheck="false" placeholder="Type your word">
-      <p class="err" id="err" aria-live="polite"></p>
-      <div class="nav">
-        <div class="row">
-          <button type="button" class="btn" data-act="back" ${step === 0 ? "disabled" : ""}>Back</button>
-          <button type="button" class="btn" data-act="helpme">Pick for me</button>
-        </div>
-        <button type="submit" class="btn go">${last ? "Show my story!" : "Next"}</button>
-      </div>
-    </form>
-    <p class="footnote">No peeking! The story stays secret until every word is in.</p>`;
+  $("#askCount").textContent = editing ? `Changing word ${step + 1}` : `Word ${step + 1} of ${blanks.length}`;
+  $("#askTheme").textContent = story.theme;
+  $("#askTitle").textContent = story.title;
+  $("#askDots").innerHTML = blanks.map((_, i) =>
+    `<span class="dot ${answers[i] && i !== step ? "done" : ""} ${i === step ? "now" : ""}"></span>`).join("");
+  $("#askArt").textContent = "Give me " + info.art;
+  $("#askKind").textContent = info.label;
+  $("#askMeaning").textContent = info.meaning;
+  $("#askEx").innerHTML = "Like: " + shuffle(info.ex).slice(0, 3).map(w => `<span class="chip">${esc(w)}</span>`).join("");
+  $("#askNote").textContent = editing ? "Type a new word, then tap Save." : "No peeking! The story stays secret until every word is in.";
+  const input = $("#answer");
+  input.value = answers[step] || "";
+  input.setAttribute("enterkeyhint", editing || last ? "done" : "next");
+  $("#err").textContent = "";
+  const back = $("#backBtn");
+  back.textContent = editing ? "Cancel" : "Back";
+  back.disabled = !editing && step === 0;
+  $("#nextBtn").textContent = editing ? "Save" : (last ? "Show my story!" : "Next");
+  const sc = $("#askScroll"); if (sc) sc.scrollTop = 0;
 }
+
+function focusAnswer(){
+  const input = $("#answer");
+  if (!input) return;
+  try { input.focus({ preventScroll: true }); } catch(e) { try { input.focus(); } catch(_){} }
+  try { const n = input.value.length; input.setSelectionRange(n, n); } catch(e){}
+}
+
+/* Size the asking screen to the part of the screen the keyboard isn't covering. */
+function fitAsk(){
+  const el = $("#askScreen");
+  if (!el) return;
+  const vv = window.visualViewport;
+  const h = vv ? vv.height : window.innerHeight;
+  if (vv) {
+    el.style.top = vv.offsetTop + "px";
+    el.style.left = vv.offsetLeft + "px";
+    el.style.width = vv.width + "px";
+    el.style.height = vv.height + "px";
+  }
+  el.classList.toggle("tight", h < 560);
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", fitAsk);
+  window.visualViewport.addEventListener("scroll", fitAsk);
+}
+window.addEventListener("resize", fitAsk);
 
 function storyView(){
   const { story, answers } = state;
@@ -331,7 +457,7 @@ function storyView(){
       <h2>${esc(story.title)}</h2>
       <div class="text" id="storyText">${renderStory(story, answers)}</div>
     </article>
-    <p class="legend">Tap a yellow word to see what kind of word it was.</p>
+    <p class="legend">Made a mistake? Tap any yellow word to change it.</p>
     <div class="row">
       ${canSpeak ? `<button class="btn blue" data-act="speak" id="speakBtn">Read it to me</button>` : ""}
       <button class="btn go" data-act="next">Next ${state.theme ? esc(state.theme) : "surprise"} story</button>
@@ -341,57 +467,55 @@ function storyView(){
 
 /* ---------- events ---------- */
 function bind(){
-  document.querySelectorAll("[data-act]").forEach(el => el.addEventListener("click", onAct));
-  const form = $("#askForm");
-  if (form) {
-    const input = $("#answer");
-    setTimeout(() => { try { input.focus({ preventScroll: true }); } catch(e){} }, 30);
-    form.addEventListener("submit", e => { e.preventDefault(); saveAndAdvance(); });
-    input.addEventListener("input", () => { $("#err").textContent = ""; });
-  }
+  document.querySelectorAll("#app [data-act]").forEach(el => el.addEventListener("click", onAct));
   document.querySelectorAll(".w").forEach(w => {
-    w.addEventListener("click", showTip);
-    w.addEventListener("focus", showTip);
-    w.addEventListener("blur", hideTip);
+    const edit = e => go({ view: "ask", step: +e.currentTarget.dataset.i, editing: true, storyScroll: window.scrollY });
+    w.addEventListener("click", edit);
+    w.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); edit(e); } });
   });
+}
+
+function bindAsk(){
+  document.querySelectorAll("#askScreen [data-act]").forEach(el => el.addEventListener("click", onAct));
+  // Keep the keyboard up: stop these buttons from taking focus away from the text box.
+  document.querySelectorAll("#askScreen .keep").forEach(b => {
+    b.addEventListener("mousedown", e => e.preventDefault());
+    b.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse") e.preventDefault(); });
+  });
+  $("#askForm").addEventListener("submit", e => { e.preventDefault(); saveAndAdvance(); });
+  $("#answer").addEventListener("input", () => { $("#err").textContent = ""; });
 }
 
 function saveAndAdvance(){
   const val = $("#answer").value.trim();
-  if (!val) { $("#err").textContent = "Type a word first, or tap Pick for me."; return; }
+  if (!val) { $("#err").textContent = "Type a word first, or tap Pick for me."; focusAnswer(); return; }
   const answers = state.answers.slice(); answers[state.step] = val;
+  if (state.editing) { go({ answers, view: "story", editing: false, restoreScroll: true }); return; }
   if (state.step < state.blanks.length - 1) go({ answers, step: state.step + 1 });
-  else { markPlayed(state.story.id); go({ answers, view: "story" }); }
+  else { markPlayed(state.story.id); go({ answers, view: "story", scrollTop: true }); }
 }
 
 function onAct(e){
   const act = e.currentTarget.dataset.act;
-  if (act === "home") go({ view: "home" });
+  if (act === "home") { store("gb-game", null); go({ view: "home", story: null, editing: false }); }
   else if (act === "theme") startStory(e.currentTarget.dataset.theme || null);
   else if (act === "reset") { played = new Set(); store("gb-played", []); draw(); }
-  else if (act === "back" && state.step > 0) {
-    const answers = state.answers.slice(); answers[state.step] = $("#answer").value.trim();
-    go({ answers, step: state.step - 1 });
+  else if (act === "back") {
+    if (state.editing) { go({ view: "story", editing: false, restoreScroll: true }); return; }
+    if (state.step > 0) {
+      const answers = state.answers.slice(); answers[state.step] = $("#answer").value.trim();
+      go({ answers, step: state.step - 1 });
+    } else focusAnswer();
   }
   else if (act === "helpme") {
     const info = TYPES[state.blanks[state.step]];
     if (info) { $("#answer").value = pick(info.ex); $("#err").textContent = ""; }
+    focusAnswer();
   }
   else if (act === "next") startStory(state.theme);
   else if (act === "again") startStory(state.theme, state.story);
   else if (act === "speak") toggleSpeech();
 }
-
-let tipTimer;
-function showTip(e){
-  const t = $("#tip"), r = e.currentTarget.getBoundingClientRect();
-  t.textContent = e.currentTarget.dataset.type; t.hidden = false;
-  const left = Math.min(window.innerWidth - t.offsetWidth - 8, Math.max(8, r.left));
-  t.style.left = left + "px"; t.style.top = Math.max(8, r.top - t.offsetHeight - 6) + "px";
-  clearTimeout(tipTimer); tipTimer = setTimeout(hideTip, 1800);
-}
-function hideTip(){ $("#tip").hidden = true; }
-window.addEventListener("scroll", hideTip, { passive: true });
 
 /* ---------- read aloud ---------- */
 let speaking = false;
@@ -409,5 +533,6 @@ function toggleSpeech(){
   } catch(e) { if (btn) btn.hidden = true; }
 }
 
+restoreGame();
 draw();
 </script>
